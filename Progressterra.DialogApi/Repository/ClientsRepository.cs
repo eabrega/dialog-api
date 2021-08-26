@@ -15,6 +15,10 @@ namespace Progressterra.DialogApi.Repository
 
         public Guid Get(IReadOnlyCollection<Guid> clientsIds)
         {
+            var orderedCliens = clientsIds
+                .OrderBy(x=>x)
+                .ToArray();
+
             foreach (var clients in _dialogClients)
             {
                 if (clients.Value.Length != clientsIds.Count)
@@ -22,7 +26,7 @@ namespace Progressterra.DialogApi.Repository
                     continue;
                 }
 
-                if (clients.Value.SequenceEqual(clientsIds))
+                if (clients.Value.SequenceEqual(orderedCliens))
                 {
                     return clients.Key;
                 }
@@ -38,7 +42,7 @@ namespace Progressterra.DialogApi.Repository
                 .GroupBy(x => x.IDRGDialog)
                 .ToDictionary(
                     x => x.Key,
-                    y => y.Select(c => c.IDClient).ToArray());
+                    y => y.Select(c => c.IDClient).OrderBy(x=>x).ToArray());
         }
     }
 }
